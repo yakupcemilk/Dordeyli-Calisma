@@ -32,6 +32,7 @@ uint8_t fifoBuffer[64];
 Quaternion q;           // [w, x, y, z]         dördeyler
 VectorInt16 aa;         // [x, y, z]            ivmeölçer ölçümleri
 VectorInt16 aaWorld;    // [x, y, z]            yerçekimi ivmesiz (9,81m/s çıkarılarak optimize edilmiş) ivmeölçer ölçümleri
+VectorInt16 aaReal;
 VectorFloat gravity;    // [x, y, z]            yerçekimi klasik vektörleri
 float euler[3];         // [psi, theta, phi]    Euler açıları
 float ypr[3];           // [yaw, pitch, roll]   x, y ve z direksiyonlarındaki ana hareketler
@@ -168,8 +169,8 @@ void loop() {
             mpu.dmpGetQuaternion(&q, fifoBuffer);
             mpu.dmpGetAccel(&aa, fifoBuffer);
             mpu.dmpGetGravity(&gravity, &q);
-            mpu.dmpGetLinearAccel(&aa, &gravity);
-            mpu.dmpGetLinearAccelInWorld(&aaWorld, &q);
+            mpu.dmpGetLinearAccel(&aaReal, &aa, &gravity);
+            mpu.dmpGetLinearAccelInWorld(&aaReal, &aaWorld, &q);
             Serial.print("aworld\t");
             Serial.print(aaWorld.x);
             Serial.print("\t");
